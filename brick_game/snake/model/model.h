@@ -29,7 +29,6 @@ class Snake {
 
   Direction _directoin;
   std::deque<std::pair<int, int>> _body;
-
   int _field_height;
   int _field_width;
 
