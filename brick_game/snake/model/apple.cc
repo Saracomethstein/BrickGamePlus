@@ -2,7 +2,7 @@
 
 namespace s21 {
 
-Apple::Apple(int field_height, int field_width)
+Apple::Apple(int field_width, int field_height)
     : _field_height(field_height), _field_width(field_width) {
   std::srand(static_cast<unsigned int>(std::time(0)));
   GenerateNewPosition(Snake(0, field_width, field_height));

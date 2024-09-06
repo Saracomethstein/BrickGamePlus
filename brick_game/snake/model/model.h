@@ -40,7 +40,6 @@ class Snake {
   bool CheckCollision() const;
   void SetDirectoin(Direction new_direction);
   Direction GetDirection() const;
-
   const std::deque<std::pair<int, int>>& GetBody() const;
   std::pair<int, int> GetHeadPositoin() const;
 };
@@ -52,7 +51,7 @@ class Apple {
   int _field_width;
 
  public:
-  Apple(int field_height, int field_width);
+  Apple(int field_width, int field_height);
   void GenerateNewPosition(const Snake& snake);
   std::pair<int, int> GetPosition() const;
 };
@@ -60,14 +59,13 @@ class Apple {
 class GameField {
  private:
   int _field_height;
-  int _field_widht;
+  int _field_width;
   Snake _snake;
   Apple _apple;
-  GameState _game_state;
+  GameState _state;
 
  public:
   GameField(int width, int height);
-
   void Update();
   void ChangeDirectoin(Direction new_directoin);
   GameState GetState() const;
