@@ -47,7 +47,7 @@ class Snake {
 
 class Apple {
  private:
-  std::pair<int, int> _positon;
+  std::pair<int, int> _position;
   int _field_height;
   int _field_width;
 
