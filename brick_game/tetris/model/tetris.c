@@ -1,4 +1,4 @@
-#include "tetris.h"
+#include "model.h"
 
 GameInfo_t *init_game() {
   srand(time(NULL));
