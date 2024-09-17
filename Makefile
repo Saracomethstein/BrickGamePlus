@@ -1,4 +1,4 @@
-SNAKE_MDOEL = brick_game/snake/model/*.cc brick_game/snake/model/*.h 
+SNAKE_MDOEL = brick_game/snake/model/src/*.cc brick_game/snake/model/include/*.h 
 
 
 all:
