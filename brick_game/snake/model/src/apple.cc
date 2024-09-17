@@ -1,5 +1,3 @@
-#include "../include/apple.h"
-
 #include "../include/model.h"
 
 namespace s21 {

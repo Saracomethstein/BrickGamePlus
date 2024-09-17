@@ -1,4 +1,4 @@
-#include "model.h"
+#include "../include/model.h"
 
 GameInfo_t *init_game() {
   srand(time(NULL));
