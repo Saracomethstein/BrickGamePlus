@@ -13,20 +13,6 @@
 #define TETRAMINO_COUNT 7
 #define BLOCK_SIZE 5
 
-typedef enum {
-  Start,
-  Pause,
-  Terminate,
-  Left,
-  Right,
-  Up,
-  Down,
-  Rotation,
-  Sig,
-  GameOver,
-  Restart,
-} UserAction_t;
-
 extern const int tetromino[TETRAMINO_COUNT][BLOCK_SIZE][BLOCK_SIZE];
 
 typedef enum {
