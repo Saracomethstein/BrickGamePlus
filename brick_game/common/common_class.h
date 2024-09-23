@@ -19,4 +19,5 @@ class ArcadeGame {
   virtual void GetData(GameInfo &gi) const = 0;
   virtual void MakeTick() = 0;
 };
+
 #endif
