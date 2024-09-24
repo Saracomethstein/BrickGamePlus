@@ -1,4 +1,5 @@
 #include "view.h"
+
 #include <iostream>
 
 void CLIView::InitCurses() {

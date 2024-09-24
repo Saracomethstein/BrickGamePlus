@@ -8,10 +8,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define WIDTH 10
 #define HEIGHT 20
 #define TETRAMINO_COUNT 7
@@ -80,8 +76,5 @@ int allow_rotation(GameInfo_t *gameInfo, int block[BLOCK_SIZE][BLOCK_SIZE]);
 
 GameInfo_t *init_game();
 GameInfo_t update_current_state(GameInfo_t *gameInfo, int *move_interval);
-
-#ifdef __cplusplus
-}
 
 #endif

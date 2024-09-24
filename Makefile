@@ -5,7 +5,7 @@ LDFLAGS = -lncurses
 
 # SRC FILES
 TETRIS_MODEL_SRC = brick_game/tetris/model/src/tetris.c brick_game/tetris/model/src/extern_tetris.cc
-# COMMON_MODEL_SRC = brick_game/common/common.cc  # предполагается, что есть какой-то .cc файл, т.к. .h не компилируется
+COMMON_MODEL_SRC = brick_game/common/common_class.h brick_game/common/common_types.h
 CONTROLLER_SRC = controller/controller.cc
 CLI_VIEW_SRC = gui/cli/cli_views/view.cc
 CLI_MAIN_SRC = gui/cli/main_cli.cc

@@ -5,13 +5,15 @@
 
 class ArcadeGame {
  public:
-  enum class Keys {
+  enum Keys {
     Key_Up,
     Key_Down,
     Key_Left,
     Key_Right,
     Key_Space,
     Key_ESC,
+    Key_Pause,
+    Key_Restart
   };
 
   virtual ~ArcadeGame() = default;

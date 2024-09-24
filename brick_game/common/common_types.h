@@ -6,6 +6,8 @@
 #define TETRAMINO_COUNT 7
 #define BLOCK_SIZE 5
 
+extern const int tetromino[TETRAMINO_COUNT][BLOCK_SIZE][BLOCK_SIZE];
+
 struct GameInfo {
   int **field;
   int **next;
@@ -16,20 +18,26 @@ struct GameInfo {
   int pause;
   int block_row;
   int block_col;
-  int block[BLOCK_SIZE][BLOCK_SIZE];
   int status;
+  int block[BLOCK_SIZE][BLOCK_SIZE];
 };
 
-enum class GameName {
-  TETRIS,
-  SNAKE,
-  NONE,
+enum UserAction {
+  Start,
+  Pause,
+  Terminate,
+  Left,
+  Right,
+  Up,
+  Down,
+  Rotation,
+  Sig,
+  GameOver,
+  Restart
 };
 
-enum class GameState {
-  PAUSE,
-  GMAE_OVER,
-  GAMING,
-};
+enum class GameName { TETRIS, SNAKE, NONE };
+
+enum class GameState { PAUSE, GMAE_OVER, GAMING };
 
 #endif
