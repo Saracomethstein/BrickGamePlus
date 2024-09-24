@@ -26,7 +26,7 @@ WinStruct *CLIView::InitWindows() {
   return window;
 }
 
-void CLIView::DrawBoard(GameInfo *field, WINDOW *win) {
+void CLIView::DrawBoard(GameInfo *game, WINDOW *window) {
   box(window, 0, 0);
   for (int row = 0; row < HEIGHT; row++) {
     for (int col = 0; col < WIDTH; col++) {
@@ -67,7 +67,7 @@ void CLIView::DrawStats(GameInfo *game, WINDOW *stats) {
   werase(stats);
   box(stats, 0, 0);
   mvwprintw(stats, 1, 1, "Stats");
-  mvwprintw(stats, 2, 1, "Record: %d", game->high_score);
+  mvwprintw(stats, 2, 1, "Record: %d", game->record);
   mvwprintw(stats, 3, 1, "Score: %d", game->score);
   mvwprintw(stats, 4, 1, "Level: %d", game->level);
   wrefresh(stats);
@@ -118,10 +118,10 @@ void CLIView::DrawGameOver(WinStruct *window) {
 }
 
 void CLIView::DrawHello(GameInfo *game, WinStruct *window) {
-  draw_board(game, window->field);
-  draw_stats(game, window->stats);
-  draw_next(game, window->next);
-  draw_help(window->help);
+  DrawBoard(game, window->field);
+  DrawStats(game, window->stats);
+  DrawNext(game, window->next);
+  DrawHelp(window->help);
   mvwprintw(window->field, 10, 5, "Press any key");
   mvwprintw(window->field, 11, 6, "to continue");
   wrefresh(window->field);
@@ -133,26 +133,26 @@ void CLIView::DrawHello(GameInfo *game, WinStruct *window) {
 
 void CLIView::DrawFrontend(GameInfo *game, WinStruct *window) {
   if (game->status == Start) {
-    draw_hello(game, window);
+    DrawHello(game, window);
   }
 
   if (game->status == Down) {
-    draw_board(game, window->field);
-    draw_stats(game, window->stats);
-    draw_next(game, window->next);
-    draw_help(window->help);
+    DrawBoard(game, window->field);
+    DrawStats(game, window->stats);
+    DrawNext(game, window->next);
+    DrawHelp(window->help);
   }
 
   if (game->status == Pause) {
-    draw_pause(window);
+    DrawPause(window);
   }
 
   if (game->status == GameOver) {
-    draw_game_over(window);
+    DrawGameOver(window);
   }
 
   if (game->status == Restart) {
-    clear_field(game, window->field);
+    ClearField(game, window->field);
     game->status = Down;
   }
 }

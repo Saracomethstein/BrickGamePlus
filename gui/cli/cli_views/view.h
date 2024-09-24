@@ -17,7 +17,6 @@ class CLIView {
  public:
   void InitCurses();
   void DrawBoard(GameInfo *field, WINDOW *win);
-  void DrawNext(GameInfo *game, WINDOW *nextfigure);
   void DrawStats(GameInfo *game, WINDOW *stats);
   void DrawHelp(WINDOW *help);
   void DrawNext(GameInfo *game, WINDOW *next);

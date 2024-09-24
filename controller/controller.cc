@@ -10,9 +10,9 @@ void GameController::SetGame(GameName gn) {
       break;
 
       // Edit snake class for arcade game //
-      // case GameName::SNAKE:
-      //   currentGame = std::make_unique<s21::Snake>();
-      //   break;
+      case GameName::SNAKE:
+        // currentGame = std::make_unique<s21::Snake>();
+        break;
 
     case GameName::NONE:
       currentGame.reset();

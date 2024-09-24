@@ -2,5 +2,6 @@
 
 int main() {
   CLIView view;
+  view.DrawFrontend();
   return 0;
 }

@@ -17,7 +17,7 @@ struct GameInfo {
   int block_row;
   int block_col;
   int block[BLOCK_SIZE][BLOCK_SIZE];
-  GameState state;
+  int status;
 };
 
 enum class GameName {

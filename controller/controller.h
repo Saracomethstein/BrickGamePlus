@@ -1,11 +1,10 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include <memory.h>
+#include <memory>
 
 #include "../brick_game/common/common_class.h"
 #include "../brick_game/common/common_types.h"
-#include "../brick_game/snake/model/include/model.h"
 #include "../brick_game/tetris/model/include/extern_model.h"
 
 class GameController {
