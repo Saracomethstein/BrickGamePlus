@@ -1,6 +1,8 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <memory.h>
+
 #include "../brick_game/common/common_class.h"
 #include "../brick_game/common/common_types.h"
 #include "../brick_game/snake/model/include/model.h"
