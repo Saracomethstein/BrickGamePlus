@@ -2,6 +2,6 @@
 
 int main() {
   CLIView view;
-  view.DrawFrontend();
+  view.GameLoop();
   return 0;
 }

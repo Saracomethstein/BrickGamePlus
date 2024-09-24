@@ -1,4 +1,5 @@
 #include "view.h"
+#include <iostream>
 
 void CLIView::InitCurses() {
   initscr();
@@ -154,5 +155,11 @@ void CLIView::DrawFrontend(GameInfo *game, WinStruct *window) {
   if (game->status == Restart) {
     ClearField(game, window->field);
     game->status = Down;
+  }
+}
+
+void CLIView::GameLoop() {
+  for (int i = 0; i < 100; i++) {
+    std::cout << "Hello, i working! And i start i = " << i;
   }
 }

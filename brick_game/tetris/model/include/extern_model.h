@@ -3,9 +3,9 @@
 
 #include "../../../common/common_class.h"
 
-extern "C" {
-#include "model.h"
-}
+// extern "C" {
+// #include "model.h"
+// }
 
 namespace s21 {
 class TetrisGame : public ArcadeGame {
