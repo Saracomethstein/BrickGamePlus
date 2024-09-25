@@ -159,8 +159,4 @@ void CLIView::DrawFrontend(GameInfo *game, WinStruct *window) {
   }
 }
 
-void CLIView::GameLoop() {
-  for (int i = 0; i < 100; i++) {
-    std::cout << "Hello, i working! And i start i = " << i;
-  }
-}
+void CLIView::GameLoop() { std::cout << "Start cli interface and game!\n"; }
