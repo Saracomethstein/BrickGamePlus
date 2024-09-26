@@ -1,8 +1,70 @@
 #include "../include/model.h"
 
-GameInfo_t *init_game() {
+namespace s21 {
+
+TetrisGame::TetrisGame() { tetris_game_ = InitGame(); }
+TetrisGame::~TetrisGame() { FreeGame(tetris_game_); }
+
+void TetrisGame::HandleKey(Keys k) {
+  UserAction action;
+
+  switch (k) {
+    case Keys::Key_Left:
+      action = Left;
+      break;
+    case Keys::Key_Right:
+      action = Right;
+      break;
+
+    case Keys::Key_Up:
+      action = Up;
+      break;
+
+    case Keys::Key_Down:
+      action = Down;
+      break;
+
+    case Keys::Key_Space:
+      action = Rotation;
+      break;
+
+    case Keys::Key_ESC:
+      action = Pause;
+      break;
+
+    case Keys::Key_Q:
+      action = Terminate;
+      break;
+
+    case Keys::Key_R:
+      action = Restart;
+      break;
+  }
+  UserInput(tetris_game_, action);
+}
+
+void TetrisGame::GetData(GameInfo &gi) const {
+  gi.field = tetris_game_->field;
+  gi.next = tetris_game_->next;
+  gi.score = tetris_game_->score;
+  gi.record = tetris_game_->record;
+  gi.level = tetris_game_->level;
+  gi.speed = tetris_game_->speed;
+  gi.pause = tetris_game_->pause;
+  gi.block_row = tetris_game_->block_row;
+  gi.block_col = tetris_game_->block_col;
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
+    for (int j = 0; j < BLOCK_SIZE; ++j) {
+      gi.block[i][j] = tetris_game_->block[i][j];
+    }
+  }
+}
+
+void TetrisGame::MakeTick() { MoveDown(tetris_game_); }
+
+GameInfo *TetrisGame::InitGame() {
   srand(time(NULL));
-  GameInfo_t *game = (GameInfo_t *)malloc(sizeof(GameInfo_t));
+  GameInfo *game = (GameInfo *)malloc(sizeof(GameInfo));
 
   game->field = (int **)calloc(HEIGHT, sizeof(int *));
   for (int i = 0; i < HEIGHT; i++) {
@@ -15,41 +77,41 @@ GameInfo_t *init_game() {
   }
 
   game->status = Start;
-  load_game(game);
+  LoadGame(game);
 
   return game;
 }
 
-void load_game(GameInfo_t *game) {
+void TetrisGame::LoadGame(GameInfo *game) {
   game->block_row = 0;
   game->block_col = 2;
   game->score = 0;
   game->speed = 1;
-  choose_tetromino(game);
-  place_block(game);
-  load_record(game);
+  ChooseTetromino(game);
+  PlaceBlock(game);
+  LoadRecord(game);
 }
 
-void load_record(GameInfo_t *game) {
+void TetrisGame::LoadRecord(GameInfo *game) {
   FILE *file = fopen("record.txt", "r");
   if (file != NULL) {
     int number;
     if (fscanf(file, "%d", &number) == 1) {
-      game->high_score = number;
+      game->record = number;
     }
     fclose(file);
   }
 }
 
-void write_record(GameInfo_t *game) {
+void TetrisGame::WriteRecord(GameInfo *game) {
   FILE *file = fopen("record.txt", "w");
   if (file != NULL) {
-    fprintf(file, "%d", game->high_score);
+    fprintf(file, "%d", game->record);
   }
   fclose(file);
 }
 
-void free_game(GameInfo_t *game) {
+void TetrisGame::FreeGame(GameInfo *game) {
   if (game) {
     if (game->field) {
       for (int i = 0; i < HEIGHT; i++) {
@@ -71,7 +133,7 @@ void free_game(GameInfo_t *game) {
   }
 }
 
-void choose_tetromino(GameInfo_t *game) {
+void TetrisGame::ChooseTetromino(GameInfo *game) {
   int flag = 0;
 
   for (int i = 0; i < BLOCK_SIZE; i++) {
@@ -106,7 +168,7 @@ void choose_tetromino(GameInfo_t *game) {
   }
 }
 
-void place_block(GameInfo_t *game) {
+void TetrisGame::PlaceBlock(GameInfo *game) {
   for (int i = 0; i < BLOCK_SIZE; i++) {
     for (int j = 0; j < BLOCK_SIZE; j++) {
       if (game->block[i][j] == 1) {
@@ -116,7 +178,7 @@ void place_block(GameInfo_t *game) {
   }
 }
 
-void clear_block(GameInfo_t *game) {
+void TetrisGame::ClearBlock(GameInfo *game) {
   for (int i = 0; i < BLOCK_SIZE; i++) {
     for (int j = 0; j < BLOCK_SIZE; j++) {
       if (game->block[i][j] == 1) {
@@ -126,7 +188,7 @@ void clear_block(GameInfo_t *game) {
   }
 }
 
-void move_down(GameInfo_t *game) {
+void TetrisGame::MoveDown(GameInfo *game) {
   for (int i = 0; i < BLOCK_SIZE; i++) {
     for (int j = 0; j < BLOCK_SIZE; j++) {
       if (game->block[i][j] == 1) {
@@ -139,12 +201,12 @@ void move_down(GameInfo_t *game) {
       }
     }
   }
-  clear_block(game);
+  ClearBlock(game);
   game->block_row++;
-  place_block(game);
+  PlaceBlock(game);
 }
 
-void move_left(GameInfo_t *game) {
+void TetrisGame::MoveLeft(GameInfo *game) {
   int flag = 0;
   for (int i = 0; i < HEIGHT; i++) {
     if (game->field[i][0] == 1) {
@@ -166,12 +228,12 @@ void move_left(GameInfo_t *game) {
     return;
   }
 
-  clear_block(game);
+  ClearBlock(game);
   game->block_col--;
-  place_block(game);
+  PlaceBlock(game);
 }
 
-void move_right(GameInfo_t *game) {
+void TetrisGame::MoveRight(GameInfo *game) {
   int flag = 0;
   for (int i = 0; i < HEIGHT; i++) {
     if (game->field[i][WIDTH - 1] == 1) {
@@ -192,37 +254,47 @@ void move_right(GameInfo_t *game) {
     return;
   }
 
-  clear_block(game);
+  ClearBlock(game);
   game->block_col++;
-  place_block(game);
+  PlaceBlock(game);
 }
 
-void rotate_figure(GameInfo_t *game) {
+void TetrisGame::RotateFigure(GameInfo *game) {
   int temp[BLOCK_SIZE][BLOCK_SIZE];
   for (int i = 0; i < BLOCK_SIZE; i++) {
     for (int j = 0; j < BLOCK_SIZE; j++) {
       temp[i][j] = game->block[i][j];
     }
   }
-  if (allow_rotation(game, temp) == 0 && check_square(game)) {
-    clear_block(game);
+  if (AllowRotation(game, temp) == 0 && CheckSquare(game)) {
+    ClearBlock(game);
     for (int i = 0; i < BLOCK_SIZE; i++) {
       for (int j = 0; j < BLOCK_SIZE; j++) {
         game->block[i][j] = temp[BLOCK_SIZE - j - 1][i];
       }
     }
-    place_block(game);
+    PlaceBlock(game);
   }
 }
 
-int check_square(GameInfo_t *game) {
+int TetrisGame::CheckSquare(GameInfo *game) {
   if (game->block[1][2] && game->block[2][2] && game->block[1][3] &&
       game->block[2][3])
     return 0;
   return 1;
 }
 
-void freeze_block(GameInfo_t *game) {
+void TetrisGame::CheckFinish(GameInfo *game) {
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < WIDTH; j++) {
+      if (game->field[i][j] == 2) {
+        game->status = GameOver;
+      }
+    }
+  }
+}
+
+void TetrisGame::FreezeBlock(GameInfo *game) {
   for (int i = 0; i < HEIGHT; i++) {
     for (int j = 0; j < WIDTH; j++) {
       if (game->field[i][j] == 1) {
@@ -232,7 +304,7 @@ void freeze_block(GameInfo_t *game) {
   }
 }
 
-void find_fulls(GameInfo_t *game, int *num) {
+void TetrisGame::FindFulls(GameInfo *game, int *num) {
   for (int i = HEIGHT - 1; i >= 0; i--) {
     int count = 0;
     for (int j = 0; j < WIDTH; j++) {
@@ -242,13 +314,13 @@ void find_fulls(GameInfo_t *game, int *num) {
     }
     if (count == WIDTH) {
       (*num) += 1;
-      clear_lines(game, i);
-      find_fulls(game, num);
+      ClearLines(game, i);
+      FindFulls(game, num);
     }
   }
 }
 
-void update_score(GameInfo_t *game, int count) {
+void TetrisGame::UpdateScore(GameInfo *game, int count) {
   int step = 100;
   if (count == 1) {
     game->score += step * count;
@@ -259,12 +331,12 @@ void update_score(GameInfo_t *game, int count) {
   } else if (count >= 4) {
     game->score += step * 15;
   }
-  if (game->score > game->high_score) {
-    game->high_score = game->score;
+  if (game->score > game->record) {
+    game->record = game->score;
   }
 }
 
-void update_speed(GameInfo_t *game, int **speed) {
+void TetrisGame::UpdateSpeed(GameInfo *game, int **speed) {
   int curr_speed = game->speed;
   int new_speed = game->score / 600 + 1;
   if (new_speed > 10) new_speed = 10;
@@ -274,9 +346,11 @@ void update_speed(GameInfo_t *game, int **speed) {
   }
 }
 
-void update_level(GameInfo_t *game) { game->level = game->score / 600 + 1; }
+void TetrisGame::UpdateLevel(GameInfo *game) {
+  game->level = game->score / 600 + 1;
+}
 
-void clear_lines(GameInfo_t *game, int row_index) {
+void TetrisGame::ClearLines(GameInfo *game, int row_index) {
   for (int i = row_index; i > 0; i--) {
     for (int j = 0; j < WIDTH; j++) {
       game->field[i][j] = game->field[i - 1][j];
@@ -287,17 +361,8 @@ void clear_lines(GameInfo_t *game, int row_index) {
   }
 }
 
-void check_finish(GameInfo_t *game) {
-  for (int i = 0; i < 2; i++) {
-    for (int j = 0; j < WIDTH; j++) {
-      if (game->field[i][j] == 2) {
-        game->status = GameOver;
-      }
-    }
-  }
-}
-
-int allow_rotation(GameInfo_t *game, int temp[BLOCK_SIZE][BLOCK_SIZE]) {
+int TetrisGame::AllowRotation(GameInfo *game,
+                              int temp[BLOCK_SIZE][BLOCK_SIZE]) {
   int dummy[BLOCK_SIZE][BLOCK_SIZE];
   int flag = 0;
   for (int i = 0; i < BLOCK_SIZE; i++) {
@@ -305,8 +370,8 @@ int allow_rotation(GameInfo_t *game, int temp[BLOCK_SIZE][BLOCK_SIZE]) {
       dummy[i][j] = temp[BLOCK_SIZE - j - 1][i];
     }
   }
-  int left_idx = up_block_col_left(dummy);
-  int right_idx = up_block_col_right(dummy);
+  int left_idx = UpBlockColLeft(dummy);
+  int right_idx = UpBlockColRight(dummy);
   if (game->block_col + right_idx > 7 || game->block_col - left_idx < -2)
     flag = 1;
   for (int i = 0; i < BLOCK_SIZE; i++) {
@@ -322,7 +387,7 @@ int allow_rotation(GameInfo_t *game, int temp[BLOCK_SIZE][BLOCK_SIZE]) {
   return flag;
 }
 
-int up_block_col_left(int dummy[BLOCK_SIZE][BLOCK_SIZE]) {
+int TetrisGame::UpBlockColLeft(int dummy[BLOCK_SIZE][BLOCK_SIZE]) {
   int pos = 2;
   int temp = 6;
   for (int i = 0; i < BLOCK_SIZE; i++) {
@@ -336,7 +401,7 @@ int up_block_col_left(int dummy[BLOCK_SIZE][BLOCK_SIZE]) {
   return pos - temp;
 }
 
-int up_block_col_right(int dummy[BLOCK_SIZE][BLOCK_SIZE]) {
+int TetrisGame::UpBlockColRight(int dummy[BLOCK_SIZE][BLOCK_SIZE]) {
   int pos = 2;
   int temp = -1;
   for (int i = 0; i < BLOCK_SIZE; i++) {
@@ -350,54 +415,54 @@ int up_block_col_right(int dummy[BLOCK_SIZE][BLOCK_SIZE]) {
   return temp - pos;
 }
 
-GameInfo_t update_current_state(GameInfo_t *game, int *move_interval) {
+GameInfo TetrisGame::UpdateCurrentState(GameInfo *game, int *move_interval) {
   int count = 0;
-  freeze_block(game);
-  find_fulls(game, &count);
+  FreezeBlock(game);
+  FindFulls(game, &count);
   if (count > 0) {
-    update_score(game, count);
-    update_speed(game, &move_interval);
-    update_level(game);
+    UpdateScore(game, count);
+    UpdateSpeed(game, &move_interval);
+    UpdateLevel(game);
   }
-  check_finish(game);
+  CheckFinish(game);
   if (game->status != GameOver) {
     game->block_row = 0;
     game->block_col = 2;
-    choose_tetromino(game);
-    place_block(game);
+    ChooseTetromino(game);  // edit name //
+    PlaceBlock(game);
     game->status = Down;
   }
   return *game;
 }
 
-void user_input(GameInfo_t *game, int hold) {
+void TetrisGame::UserInput(GameInfo *game, int hold) {
   switch (hold) {
-    case ' ':
+    case Key_Space:
       game->status = Rotation;
-      rotate_figure(game);
+      RotateFigure(game);
       break;
-    case KEY_DOWN:
+    case Key_Down:
       game->status = Down;
-      move_down(game);
+      MoveDown(game);
       break;
-    case KEY_LEFT:
+    case Key_Left:
       game->status = Left;
-      move_left(game);
+      MoveLeft(game);
       break;
-    case KEY_RIGHT:
+    case Key_Right:
       game->status = Right;
-      move_right(game);
+      MoveRight(game);
       break;
-    case 'q':
+    case Key_Q:
       game->status = Terminate;
       break;
-    case 'p':
+    case Key_ESC:
       if (game->status == Pause) {
         game->status = Sig;
       } else if (game->status != GameOver)
         game->status = Pause;
       break;
-    case 'r':
+    case Key_R:
       game->status = Restart;
       break;
     default:
@@ -406,54 +471,4 @@ void user_input(GameInfo_t *game, int hold) {
       break;
   }
 }
-
-const int tetromino[TETRAMINO_COUNT][BLOCK_SIZE][BLOCK_SIZE] = {
-    {{0, 0, 0, 0, 0},
-     {0, 1, 0, 0, 0},
-     {0, 1, 1, 1, 0},
-     {0, 0, 0, 0, 0},
-     {0, 0, 0, 0, 0}},
-    {{0, 0, 0, 0, 0},
-     {0, 0, 0, 1, 0},
-     {0, 1, 1, 1, 0},
-     {0, 0, 0, 0, 0},
-     {0, 0, 0, 0, 0}},
-    {{0, 0, 0, 0, 0},
-     {0, 0, 1, 0, 0},
-     {0, 1, 1, 1, 0},
-     {0, 0, 0, 0, 0},
-     {0, 0, 0, 0, 0}},
-    {{0, 0, 0, 0, 0},
-     {0, 0, 1, 1, 0},
-     {0, 0, 1, 1, 0},
-     {0, 0, 0, 0, 0},
-     {0, 0, 0, 0, 0}},
-    {{0, 0, 0, 0, 0},
-     {0, 0, 1, 1, 0},
-     {0, 1, 1, 0, 0},
-     {0, 0, 0, 0, 0},
-     {0, 0, 0, 0, 0}},
-    {{0, 0, 0, 0, 0},
-     {0, 1, 1, 0, 0},
-     {0, 0, 1, 1, 0},
-     {0, 0, 0, 0, 0},
-     {0, 0, 0, 0, 0}},
-    {{0, 0, 1, 0, 0},
-     {0, 0, 1, 0, 0},
-     {0, 0, 1, 0, 0},
-     {0, 0, 1, 0, 0},
-     {0, 0, 0, 0, 0}},
-};
-
-// Analog tetramino initialize //
-/*
-const int tetromino[TETRAMINO_COUNT][4] = {
-    {0x02, 0x07},  // T
-    {0x04, 0x07},  // L
-    {0x02, 0x07},  // Revert L
-    {0x03, 0x03},  // Square
-    {0x06, 0x03},  // Z
-    {0x03, 0x06},  // S
-    {0x0F}         // Line
-};
-*/
+};  // namespace s21

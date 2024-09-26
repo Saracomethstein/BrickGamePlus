@@ -5,7 +5,8 @@
 
 #include "../brick_game/common/common_class.h"
 #include "../brick_game/common/common_types.h"
-#include "../brick_game/tetris/model/include/extern_model.h"
+#include "../brick_game/tetris/model/include/model.h"
+// include snake model //
 
 class GameController {
  public:

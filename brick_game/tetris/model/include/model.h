@@ -1,80 +1,58 @@
-#ifndef TETRIS_MODEL_H
-#define TETRIS_MODEL_H
+#ifndef EXTERN_MODEL_H
+#define EXTERN_MODEL_H
 
-#include <ncurses.h>
-#include <signal.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include <iostream>
+#include <memory>
 
-#define WIDTH 10
-#define HEIGHT 20
-#define TETRAMINO_COUNT 7
-#define BLOCK_SIZE 5
+#include "../../../common/common_class.h"
 
-extern const int tetromino[TETRAMINO_COUNT][BLOCK_SIZE][BLOCK_SIZE];
+namespace s21 {
+class TetrisGame : public ArcadeGame {
+ public:
+  TetrisGame();
+  ~TetrisGame() override;
 
-typedef enum {
-  Start,
-  Pause,
-  Terminate,
-  Left,
-  Right,
-  Up,
-  Down,
-  Rotation,
-  Sig,
-  GameOver,
-  Restart,
-} UserAction_t;
+  void HandleKey(Keys k) override;
+  void GetData(GameInfo &gi) const override;
+  void MakeTick() override;
 
-typedef struct {
-  int **field;
-  int **next;
-  int block[BLOCK_SIZE][BLOCK_SIZE];
-  int block_row;
-  int block_col;
-  int score;
-  int high_score;
-  int level;
-  int speed;
-  int pause;
-  int status;
-} GameInfo_t;
+  void UserInput(GameInfo *gameInfo, int hold);
+  void ChooseTetromino(GameInfo *gameInfo);
+  void LoadGame(GameInfo *gameInfo);
 
-void user_input(GameInfo_t *gameInfo, int hold);
-void choose_tetromino(GameInfo_t *gameInfo);
-void load_game(GameInfo_t *gameInfo);
+  void MoveLeft(GameInfo *gameInfo);
+  void MoveRight(GameInfo *gameInfo);
+  void MoveDown(GameInfo *gameInfo);
 
-void move_left(GameInfo_t *gameInfo);
-void move_right(GameInfo_t *gameInfo);
-void move_down(GameInfo_t *gameInfo);
+  void ClearBlock(GameInfo *gameInfo);
+  void PlaceBlock(GameInfo *gameInfo);
+  void FreezeBlock(GameInfo *gameInfo);
+  void ClearLines(GameInfo *gameInfo, int row_index);
 
-void clear_block(GameInfo_t *gameInfo);
-void place_block(GameInfo_t *gameInfo);
-void freeze_block(GameInfo_t *gameInfo);
-void clear_lines(GameInfo_t *gameInfo, int row_index);
+  void UpdateScore(GameInfo *gameInfo, int count);
+  void UpdateSpeed(GameInfo *gameInfo, int **speed);
+  void UpdateLevel(GameInfo *gameInfo);
 
-void update_score(GameInfo_t *gameInfo, int count);
-void update_speed(GameInfo_t *gameInfo, int **speed);
-void update_level(GameInfo_t *gameInfo);
+  void LoadRecord(GameInfo *gameInfo);
+  void WriteRecord(GameInfo *gameInfo);
 
-void load_record(GameInfo_t *gameInfo);
-void write_record(GameInfo_t *gameInfo);
+  void FreeGame(GameInfo *gameInfo);
+  void FindFulls(GameInfo *gameInfo, int *count);
 
-void free_game(GameInfo_t *gameInfo);
-void find_fulls(GameInfo_t *gameInfo, int *count);
+  void CheckFinish(GameInfo *gameInfo);
+  int CheckSquare(GameInfo *gameInfo);
 
-void check_finish(GameInfo_t *gameInfo);
-int check_square(GameInfo_t *gameInfo);
+  void RotateFigure(GameInfo *gameInfo);
+  int UpBlockColLeft(int block[BLOCK_SIZE][BLOCK_SIZE]);
+  int UpBlockColRight(int block[BLOCK_SIZE][BLOCK_SIZE]);
+  int AllowRotation(GameInfo *gameInfo, int block[BLOCK_SIZE][BLOCK_SIZE]);
 
-void rotate_figure(GameInfo_t *gameInfo);
-int up_block_col_left(int block[BLOCK_SIZE][BLOCK_SIZE]);
-int up_block_col_right(int block[BLOCK_SIZE][BLOCK_SIZE]);
-int allow_rotation(GameInfo_t *gameInfo, int block[BLOCK_SIZE][BLOCK_SIZE]);
+  GameInfo *InitGame();
+  GameInfo UpdateCurrentState(GameInfo *gameInfo, int *move_interval);
 
-GameInfo_t *init_game();
-GameInfo_t update_current_state(GameInfo_t *gameInfo, int *move_interval);
+ private:
+  GameInfo *tetris_game_;
+};
+};  // namespace s21
 
 #endif

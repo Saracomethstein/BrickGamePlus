@@ -12,8 +12,8 @@ class ArcadeGame {
     Key_Right,
     Key_Space,
     Key_ESC,
-    Key_Pause,
-    Key_Restart
+    Key_R,
+    Key_Q
   };
 
   virtual ~ArcadeGame() = default;
